@@ -1,21 +1,24 @@
 import { useSelector } from 'react-redux';
+import {
+  selectFilteredContacts,
+  selectLoading,
+  selectError,
+} from '../../redux/contactsSlice';
 import Contact from '../Contact/Contact';
 import s from './ContactList.module.css';
 
-const getVisibleContacts = (contacts, nameFilter) => {
-  if (!nameFilter) {
-    return contacts;
+export const ContactList = () => {
+  const visibleContacts = useSelector(selectFilteredContacts);
+  const isLoading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
   }
 
-  return contacts.filter(contact =>
-    contact.name.toLowerCase().includes(nameFilter.toLowerCase())
-  );
-};
-
-const ContactList = () => {
-  const contacts = useSelector(state => state.contacts.contacts.items);
-  const nameFilter = useSelector(state => state.filters.filters.name);
-  const visibleContacts = getVisibleContacts(contacts, nameFilter);
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className={s.listWrapper}>
